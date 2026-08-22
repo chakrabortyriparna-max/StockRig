@@ -1,0 +1,92 @@
+# SR-C03 — CI: syntax check, both test suites, migration up/down on disposable Postgres.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Syntax check (product server)
+        run: node --check product/server.js
+
+      - name: Product tests (zero-dep suite)
+        working-directory: product
+        run: node --test
+
+      - name: Cloud tests
+        working-directory: cloud
+        run: npm ci && npm test
+
+  migrations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: stockrig_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      PGPASSWORD: ci
+      DATABASE_URL: postgres://postgres:ci@localhost:5432/stockrig_ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        working-directory: cloud
+        run: npm ci
+
+      # Acceptance: idempotent both ways.
+      - name: Migrate up (twice — must be idempotent)
+        working-directory: cloud
+        run: |
+          node scripts/migrate.js up
+          node scripts/migrate.js up
+
+      - name: Assert schema exists
+        run: >
+          psql -h localhost -U postgres -d stockrig_ci -tAc
+          "SELECT count(*) FROM information_schema.tables
+           WHERE table_schema='public' AND table_name IN
+           ('users','orgs','memberships','locations','parts','stock_qty','pars','usage','audit_events')"
+          | grep -qx 9
+
+      - name: Billed-immutability trigger survives roundtrip
+        run: >
+          psql -h localhost -U postgres -d stockrig_ci -tAc
+          "SELECT count(*) FROM pg_trigger WHERE tgname='trg_usage_billed_immutable'"
+          | grep -qx 1
+
+      - name: Migrate down — schema must be gone
+        working-directory: cloud
+        run: |
+          node scripts/migrate.js down
+          LEFT=$(psql -h localhost -U postgres -d stockrig_ci -tAc \
+            "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'")
+          [ "$LEFT" = "0" ] || { echo "expected 0 public tables after down, got $LEFT"; exit 1; }
+
+      - name: Migrate up again — greenfield restored
+        working-directory: cloud
+        run: node scripts/migrate.js up
