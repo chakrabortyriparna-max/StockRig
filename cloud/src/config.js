@@ -8,6 +8,7 @@ const REQUIRED = [
   "APP_BASE_URL",
   "INSFORGE_BASE_URL",
   "INSFORGE_API_KEY",
+  "RESEND_API_KEY",
 ];
 
 function loadConfig(env = process.env) {
@@ -27,6 +28,8 @@ function loadConfig(env = process.env) {
     appBaseUrl: env.APP_BASE_URL,
     insforgeBaseUrl: String(env.INSFORGE_BASE_URL).replace(/\/$/, ""),
     insforgeApiKey: env.INSFORGE_API_KEY,
+    resendApiKey: env.RESEND_API_KEY,
+    inviteFromEmail: env.INVITE_FROM_EMAIL || "onboarding@resend.dev",
     nodeEnv: env.NODE_ENV || "development",
     sentryDsn: env.SENTRY_DSN || "",
     resendApiKey: env.RESEND_API_KEY || "",

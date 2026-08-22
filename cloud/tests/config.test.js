@@ -11,11 +11,12 @@ const VALID_ENV = {
   APP_BASE_URL: "http://localhost",
   INSFORGE_BASE_URL: "https://example.insforge.app/",
   INSFORGE_API_KEY: "ik_test_key",
+  RESEND_API_KEY: "re_test_key",
 };
 
 test("loadConfig throws listing every missing required var", () => {
   assert.throws(() => loadConfig({}), (err) => {
-    for (const k of ["DATABASE_URL", "JWT_SECRET", "APP_BASE_URL", "INSFORGE_BASE_URL", "INSFORGE_API_KEY"]) {
+    for (const k of ["DATABASE_URL", "JWT_SECRET", "APP_BASE_URL", "INSFORGE_BASE_URL", "INSFORGE_API_KEY", "RESEND_API_KEY"]) {
       assert.match(err.message, new RegExp(k));
     }
     return true;

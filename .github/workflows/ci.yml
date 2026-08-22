@@ -70,8 +70,8 @@ jobs:
           COUNT=$(psql -h localhost -U postgres -d stockrig_ci -tAc \
             "SELECT count(*) FROM information_schema.tables
              WHERE table_schema='public' AND table_name IN
-             ('users','orgs','memberships','locations','parts','stock_qty','pars','usage','audit_events','refresh_sessions')")
-          [ "$COUNT" = "10" ] || { echo "expected 10 tables, got $COUNT"; exit 1; }
+             ('users','orgs','memberships','locations','parts','stock_qty','pars','usage','audit_events','refresh_sessions','invites')")
+          [ "$COUNT" = "11" ] || { echo "expected 11 tables, got $COUNT"; exit 1; }
 
       - name: Billed-immutability trigger survives roundtrip
         run: |

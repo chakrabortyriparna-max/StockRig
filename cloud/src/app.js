@@ -5,6 +5,8 @@ const Fastify = require("fastify");
 const { loadConfig } = require("./config");
 const { createInsForgeClient } = require("./insforge");
 const { createPgTokenStore } = require("./tokenstore");
+const { createPgOrgRepo } = require("./orgRepo");
+const { createResendSender } = require("./resend");
 const { provisionShop, findMembershipByUser } = require("./tenancy");
 
 function buildApp(opts = {}) {
@@ -55,9 +57,26 @@ function buildApp(opts = {}) {
   app.decorate("provisionShop", opts.provisionShop || provisionShop);
   app.decorate("findMembershipByUser", opts.findMembershipByUser || findMembershipByUser);
 
+  const orgRepo = opts.orgRepo || createPgOrgRepo(db);
+  const resend =
+    opts.resend !== undefined
+      ? opts.resend
+      : config.resendApiKey
+        ? createResendSender({
+            apiKey: config.resendApiKey,
+            fromEmail: config.inviteFromEmail,
+          })
+        : null;
+
   // Routes
   const { authRoutes } = require("./routes/auth");
   app.register(authRoutes, { insforge, db, tokenStore });
+  app.register(require("./routes/org").orgRoutes, {
+    insforge,
+    orgRepo,
+    resend,
+    appBaseUrl: config.appBaseUrl,
+  });
 
   return app;
 }
