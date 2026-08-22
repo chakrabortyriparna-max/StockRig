@@ -96,7 +96,8 @@ if (!process.env.DATABASE_URL) {
       );
       assert.equal(bridge.rowCount, 0); // no shared members seeded; helper proves the query shape
 
-      // -- cleanup --
+      // -- cleanup (usage blocks org deletion: ON DELETE RESTRICT by design) --
+      await pool.query("DELETE FROM public.usage WHERE org_id IN ($1,$2)", [orgA, orgB]);
       await pool.query("DELETE FROM public.orgs WHERE id IN ($1,$2)", [orgA, orgB]);
     } finally {
       await pool.end();
