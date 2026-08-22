@@ -40,6 +40,28 @@ function createInsForgeClient({ baseUrl, apiKey, fetchImpl = globalThis.fetch })
     logout: () => request("/api/auth/logout", { method: "POST" }),
     currentUser: (accessToken) =>
       request("/api/auth/sessions/current", { auth: accessToken }),
+
+    // Email flows (SR-C05). OTPs are single-use, 5-min expiry, consumed after
+    // 3 failed attempts — enforced upstream by InsForge.
+    sendVerification: (email) =>
+      request("/api/auth/email/send-verification", { method: "POST", body: { email } }),
+    verifyEmail: (email, otp) =>
+      request("/api/auth/email/verify?client_type=server", {
+        method: "POST",
+        body: { email, otp },
+      }),
+    sendResetEmail: (email) =>
+      request("/api/auth/email/send-reset-password", { method: "POST", body: { email } }),
+    exchangeResetToken: (email, code) =>
+      request("/api/auth/email/exchange-reset-password-token", {
+        method: "POST",
+        body: { email, code },
+      }),
+    resetPassword: (otp, newPassword) =>
+      request("/api/auth/email/reset-password", {
+        method: "POST",
+        body: { otp, newPassword },
+      }),
   };
 }
 

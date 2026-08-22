@@ -8,23 +8,25 @@ const assert = require("node:assert/strict");
 const { buildApp } = require("../src/app");
 
 function createFakeInsForge() {
-  const users = new Map(); // email -> {password}
-  const calls = { signup: [], login: [], refresh: [], logout: [] };
+  const users = new Map(); // email -> {password, pendingOtp?}
+  const resetCodes = new Map(); // email -> code
+  const calls = { signup: [], login: [], refresh: [], logout: [], verifyReq: [], verify: [], resetReq: [], reset: [] };
   const USER = { id: "u-111", email: "dana@acme.co", createdAt: "2026-01-01T00:00:00Z" };
 
   return {
     calls,
+    users,
+    resetCodes,
     async signup(email, password) {
       calls.signup.push({ email });
       if (users.has(email)) return { status: 409, ok: false, data: { message: "exists" } };
       users.set(email, { password });
-      const email2 = email;
       return {
         status: 200, ok: true,
         data: {
           user: { ...USER, email },
           accessToken: `access-for-${email}`,
-          refreshToken: `rt-1-${email2}`,
+          refreshToken: `rt-1-${email}`,
         },
       };
     },
@@ -57,6 +59,39 @@ function createFakeInsForge() {
         return { status: 200, ok: true, data: { user: { id: "u-111", email: "dana@acme.co" } } };
       }
       return { status: 401, ok: false, data: {} };
+    },
+
+    // SR-C05 upstream behaviors (mirrors InsForge docs).
+    async sendVerification(email) {
+      calls.verifyReq.push({ email });
+      return { status: 200, ok: true, data: { success: true } };
+    },
+    async verifyEmail(email, otp) {
+      calls.verify.push({ email });
+      const u = users.get(email);
+      if (!u || u.pendingOtp !== otp) return { status: 400, ok: false, data: {} };
+      u.pendingOtp = null; // single-use
+      return {
+        status: 200, ok: true,
+        data: {
+          user: { ...USER, email },
+          accessToken: `access-verify-${email}`,
+          refreshToken: `rt-verify-${email}`,
+        },
+      };
+    },
+    async sendResetEmail(email) {
+      calls.resetReq.push({ email });
+      return { status: 200, ok: true, data: { success: true } };
+    },
+    async exchangeResetToken(email, code) {
+      calls.reset.push({ email });
+      if (resetCodes.get(email) !== code) return { status: 400, ok: false, data: {} };
+      return { status: 200, ok: true, data: { token: `reset-token-${email}` } };
+    },
+    async resetPassword(otp, newPassword) {
+      if (!String(otp).startsWith("reset-token-")) return { status: 400, ok: false, data: {} };
+      return { status: 200, ok: true, data: { message: "Password reset successfully" } };
     },
   };
 }
@@ -268,5 +303,74 @@ test("/v1/me requires bearer and maps membership", async () => {
   const ok = await app.inject({ method: "GET", url: "/v1/me", headers: { authorization: "Bearer access-valid" } });
   assert.equal(ok.statusCode, 200);
   assert.equal(ok.json().role, null); // no membership seeded for this fake user
+  await app.close();
+});
+
+// ---- SR-C05: verification + reset ----
+
+test("verify/request answers 204 identically for known and unknown emails", async () => {
+  const { app } = await appWith();
+  await app.inject({ method: "POST", url: "/v1/auth/signup", payload: BODY });
+
+  for (const email of ["dana@acme.co", "ghost@nowhere.dev"]) {
+    const res = await app.inject({ method: "POST", url: "/v1/auth/verify/request", payload: { email } });
+    assert.equal(res.statusCode, 204, email);
+    assert.equal(res.body, ""); // no body, no hints
+  }
+  await app.close();
+});
+
+test("verify exchanges a valid OTP once; reuse and wrong code fail 400", async () => {
+  const { app: app2, insforge, tokenStore } = await appWith();
+  await app2.inject({ method: "POST", url: "/v1/auth/signup", payload: BODY });
+  insforge.users.get("dana@acme.co").pendingOtp = "123456";
+
+  const good = await app2.inject({ method: "POST", url: "/v1/auth/verify", payload: { email: "dana@acme.co", otp: "123456" } });
+  assert.equal(good.statusCode, 200);
+  assert.ok(good.json().accessToken);
+  assert.equal(tokenStore.sessions.size >= 1, true);
+
+  const replay = await app2.inject({ method: "POST", url: "/v1/auth/verify", payload: { email: "dana@acme.co", otp: "123456" } });
+  assert.equal(replay.statusCode, 400); // single-use
+
+  const wrong = await app2.inject({ method: "POST", url: "/v1/auth/verify", payload: { email: "dana@acme.co", otp: "999999" } });
+  assert.equal(wrong.statusCode, 400);
+  assert.match(wrong.json().error, /invalid or expired/);
+  await app2.close();
+});
+
+test("reset/request is 204 always - no enumeration even for unknown emails", async () => {
+  const { app } = await appWith();
+  for (const email of ["ghost@nowhere.dev", "dana@acme.co"]) {
+    const res = await app.inject({ method: "POST", url: "/v1/auth/reset/request", payload: { email } });
+    assert.equal(res.statusCode, 204, email);
+    assert.equal(res.body, "");
+  }
+  await app.close();
+});
+
+test("reset flow: exchange code then set password; bad code rejected at boundary", async () => {
+  const { app, insforge } = await appWith();
+  await app.inject({ method: "POST", url: "/v1/auth/signup", payload: BODY });
+  insforge.resetCodes.set("dana@acme.co", "654321");
+
+  const badCode = await app.inject({
+    method: "POST", url: "/v1/auth/reset",
+    payload: { email: "dana@acme.co", otp: "000000", password: "new-pass-99" },
+  });
+  assert.equal(badCode.statusCode, 400);
+
+  const ok = await app.inject({
+    method: "POST", url: "/v1/auth/reset",
+    payload: { email: "dana@acme.co", otp: "654321", password: "new-pass-99" },
+  });
+  assert.equal(ok.statusCode, 200);
+  assert.deepEqual(ok.json(), { success: true });
+
+  const shortPass = await app.inject({
+    method: "POST", url: "/v1/auth/reset",
+    payload: { email: "dana@acme.co", otp: "654321", password: "12345" },
+  });
+  assert.equal(shortPass.statusCode, 400);
   await app.close();
 });

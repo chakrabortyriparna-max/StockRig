@@ -125,6 +125,85 @@ async function authRoutes(app, { insforge, db, tokenStore }) {
     return reply.send({ success: true });
   });
 
+  // ---- SR-C05: email verification + password reset ----
+  // Anti-enumeration: request endpoints answer 204 regardless of account
+  // existence (upstream also returns a generic message). Upstream outages are
+  // logged internally but not leaked to callers.
+
+  app.post("/v1/auth/verify/request", async (req, reply) => {
+    const { email } = req.body || {};
+    if (!email || !EMAIL_RE.test(String(email))) {
+      return reply.code(400).send({ error: "valid email is required" });
+    }
+    const r = await insforge.sendVerification(String(email).trim().toLowerCase());
+    if (!r.ok) req.log.error({ status: r.status }, "send-verification upstream failure");
+    return reply.code(204).send();
+  });
+
+  app.post("/v1/auth/verify", async (req, reply) => {
+    const { email, otp } = req.body || {};
+    if (!email || !EMAIL_RE.test(String(email)) || !otp || !String(otp).trim()) {
+      return reply.code(400).send({ error: "email and otp are required" });
+    }
+    const r = await insforge.verifyEmail(String(email).trim().toLowerCase(), String(otp).trim());
+    if (!r.ok) {
+      // Wrong/expired/consumed code all land here (single-use enforced upstream).
+      return reply.code(r.status === 400 ? 400 : 502)
+        .send({ error: r.status === 400 ? "invalid or expired code" : "verification upstream failure" });
+    }
+
+    const { user, accessToken, refreshToken } = r.data;
+    try {
+      if (refreshToken) await tokenStore.issue(user.id, refreshToken);
+    } catch (err) {
+      req.log.error({ err, userId: user.id }, "session recording failed after verify");
+      return reply.code(500).send({ error: "session persistence failed; try again" });
+    }
+
+    const membership = await app.findMembershipByUser(db, user.id);
+    return reply.send({
+      user: { id: user.id, email: user.email },
+      org: membership ? { id: membership.org_id, name: membership.org_name } : null,
+      role: membership ? membership.role : null,
+      accessToken,
+      refreshToken,
+    });
+  });
+
+  app.post("/v1/auth/reset/request", async (req, reply) => {
+    const { email } = req.body || {};
+    if (!email || !EMAIL_RE.test(String(email))) {
+      return reply.code(400).send({ error: "valid email is required" });
+    }
+    const r = await insforge.sendResetEmail(String(email).trim().toLowerCase());
+    if (!r.ok) req.log.error({ status: r.status }, "send-reset upstream failure");
+    return reply.code(204).send(); // always — no enumeration
+  });
+
+  app.post("/v1/auth/reset", async (req, reply) => {
+    const { email, otp, password } = req.body || {};
+    if (!email || !EMAIL_RE.test(String(email))) {
+      return reply.code(400).send({ error: "valid email is required" });
+    }
+    if (!otp || !String(otp).trim()) return reply.code(400).send({ error: "otp is required" });
+    if (!password || String(password).length < 6) {
+      return reply.code(400).send({ error: "password must be at least 6 characters" });
+    }
+
+    const x = await insforge.exchangeResetToken(String(email).trim().toLowerCase(), String(otp).trim());
+    if (!x.ok || !x.data.token) {
+      return reply.code(x.status === 400 ? 400 : 502)
+        .send({ error: x.status === 400 ? "invalid or expired code" : "reset upstream failure" });
+    }
+
+    const r = await insforge.resetPassword(x.data.token, String(password));
+    if (!r.ok) {
+      return reply.code(r.status === 400 ? 400 : 502)
+        .send({ error: r.status === 400 ? "invalid or expired token" : "reset upstream failure" });
+    }
+    return reply.send({ success: true });
+  });
+
   app.get("/v1/me", async (req, reply) => {
     const header = req.headers.authorization || "";
     const token = header.startsWith("Bearer ") ? header.slice(7) : null;
