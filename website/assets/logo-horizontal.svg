@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 200" role="img" aria-label="StockRig">
+  <rect x="12" y="20" width="160" height="160" rx="36" fill="#1C1E22"/>
+  <line x1="40" y1="100" x2="144" y2="100" stroke="#F7F5F2" stroke-width="6" stroke-dasharray="13 10" stroke-linecap="round"/>
+  <rect x="48" y="56" width="40" height="34" rx="8" fill="#F7F5F2"/>
+  <rect x="96" y="56" width="40" height="34" rx="8" fill="#8A9199"/>
+  <rect x="72" y="116" width="44" height="32" rx="8" fill="#F25C05"/>
+  <text x="204" y="118" font-family="'Archivo Black','Arial Black',system-ui,sans-serif" font-weight="900" font-size="76" letter-spacing="-2" fill="#1C1E22">STOCK<tspan fill="#F25C05">RIG</tspan></text>
+  <text x="208" y="158" font-family="Inter,'Segoe UI',system-ui,sans-serif" font-size="24" letter-spacing="4" fill="#8A9199">KNOW WHAT'S ON THE TRUCK</text>
+</svg>

@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockRig â€” The World On Your Truck</title>
+<meta name="description" content="A continuous flight through the world StockRig fixes: the supply house, the van, the job, the money. Truck-stock inventory for 1â€“5 tech shops. Free forever.">
+<link rel="icon" href="assets/logo-mark.svg">
+<link rel="stylesheet" href="assets/world.css">
+</head>
+<body>
+
+<div id="loader"><div class="loader-inner"><div id="loadNum">00</div><p>building the world</p></div></div>
+<div class="grain"></div>
+<div id="cursor"></div>
+
+<header id="topbar">
+  <a class="wordmark" href="index.html">STOCK<b>RIG</b></a>
+  <nav><a href="#interview">Interview</a><a href="index.html#pricing">Pricing</a><a class="nav-cta" href="index.html">Classic site</a></nav>
+</header>
+
+<!-- continuous flight -->
+<div id="world-pin">
+  <canvas id="scene"></canvas>
+
+  <div class="cap" data-a="0.00" data-b="0.13">
+    <p class="k">scene 01 â€” the problem you can't see</p>
+    <h2>Every part your shop owns<br>lives in one of two worlds.</h2>
+  </div>
+  <div class="cap" data-a="0.16" data-b="0.28">
+    <p class="k">scene 02 â€” the supply house</p>
+    <h2>You've stood in this line<br>for a part you already own.</h2>
+  </div>
+  <div class="cap" data-a="0.33" data-b="0.44">
+    <p class="k">scene 03 â€” inside the shelves</p>
+    <h2>Thousands of dollars,<br>no idea where.</h2>
+  </div>
+  <div class="cap" data-a="0.50" data-b="0.60">
+    <p class="k">scene 04 â€” the rig</p>
+    <h2>This is the inventory<br>your software can't see.</h2>
+  </div>
+  <div class="cap" data-a="0.64" data-b="0.74">
+    <p class="k">the par line</p>
+    <h2>One orange bin<br>drops below par.<br><em>Now you know.</em></h2>
+  </div>
+  <div class="cap" data-a="0.78" data-b="0.88">
+    <p class="k">scene 05 â€” the money</p>
+    <h2>Used on a job.<br>On the invoice.<br>Restocked by Monday.</h2>
+  </div>
+  <div class="cap end" data-a="0.90" data-b="1.01">
+    <p class="k">stockrig</p>
+    <h2>The whole loop.<br><em>Free forever.</em></h2>
+    <a class="btn" href="index.html#pricing">Start free</a>
+  </div>
+
+  <div id="rail"></div>
+</div>
+
+<!-- crawlable copy -->
+<section id="story" class="sr-only">
+  <h1>StockRig â€” know what's on the truck</h1>
+  <p>Truck-stock inventory for 1â€“5 tech trades shops. Every van becomes a tracked location, parts get par levels per truck, used parts land on jobs, restock lists write themselves. Free forever, optional $99 concierge setup. The page above is a continuous scroll-scrubbed flight: the supply house, the parts aisle, the van interior, and the billing dashboard.</p>
+</section>
+
+<!-- interview -->
+<section id="interview">
+  <h2 class="sec-title"><span>The interview.</span></h2>
+  <p class="sec-sub">32 questions, every aspect, answered straight â€” from <a href="assets/interview.md">the full dossier</a>.</p>
+  <div id="qa-holder"></div>
+</section>
+
+<footer>
+  <p class="disclosure"><b>STOCKRIG</b> â€” pre-launch local demo. Nothing leaves this machine. Market claims carry sources throughout the package. Â© 2026 StockRig (pre-launch).</p>
+</footer>
+
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/world.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockRig â€” Know what's on the truck</title>
+<meta name="description" content="Truck-stock inventory for 1â€“5 tech trades shops. Par levels, billable parts, restock lists. Free forever.">
+<link rel="icon" href="assets/logo-mark.svg">
+<style>
+:root{--orange:#F25C05;--ink:#1C1E22;--steel:#8A9199;--paper:#F7F5F2;--green:#2E9E6B;--line:#E4E0DA}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,'Segoe UI',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+header{display:flex;align-items:center;gap:14px;padding:20px 0}
+header img{height:44px}
+nav{margin-left:auto;display:flex;gap:22px;font-size:14.5px}
+nav a{color:var(--ink);text-decoration:none;font-weight:600}
+.btn{display:inline-block;background:var(--orange);color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;border-radius:11px;border:none;cursor:pointer;font-size:15px}
+.btn.dark{background:var(--ink)}
+.hero{padding:64px 0 56px;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+h1{font-size:clamp(34px,5vw,54px);line-height:1.04;letter-spacing:-2px;font-weight:900}
+.hero p.lede{font-size:18px;color:#4a4e55;margin-top:16px;max-width:46ch}
+.kicker{display:inline-block;background:#fdeadd;color:var(--orange);font-weight:800;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:99px;margin-bottom:18px}
+.cta-row{margin-top:26px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.micronote{color:var(--steel);font-size:13px}
+.mockup{background:var(--ink);border-radius:18px;padding:14px;box-shadow:0 24px 60px -24px rgba(28,30,34,.45)}
+.mockup .bar{display:flex;gap:6px;padding:2px 6px 10px}
+.mockup .bar i{width:9px;height:9px;border-radius:50%;background:#3a3e45}
+.screen{background:#fff;border-radius:10px;padding:16px;font-size:13px}
+.screen h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--steel);margin-bottom:10px}
+.srow{display:flex;justify-content:space-between;padding:7px 8px;border-radius:7px}
+.srow:nth-child(odd){background:#faf8f5}
+.pill{padding:1px 9px;border-radius:99px;font-size:11px;font-weight:800}
+.ok{background:#e3f3ea;color:var(--green)}.low{background:#fdeadd;color:var(--orange)}.out{background:#fbe3e3;color:var(--red)}
+section{padding:56px 0;border-top:1px solid var(--line)}
+h2{font-size:30px;letter-spacing:-1px;font-weight:900;margin-bottom:10px}
+.sub{color:#4a4e55;max-width:62ch}
+.quote{background:#fff;border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:12px;padding:20px 22px;margin-top:18px}
+.quote p{font-size:16.5px}
+.quote cite{display:block;margin-top:10px;font-style:normal;font-size:13px;color:var(--steel)}
+.quote cite a{color:var(--steel)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+.step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+.step .n{width:30px;height:30px;border-radius:9px;background:var(--orange);color:#fff;font-weight:900;display:grid;place-items:center;margin-bottom:12px}
+.step h3{font-size:16px;margin-bottom:6px}
+.step p{font-size:14px;color:#4a4e55}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,340px));gap:18px;margin-top:28px;justify-content:center}
+.plan{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+.plan.pro{border:2px solid var(--orange);position:relative}
+.plan.pro:before{content:"MOST SHOPS PICK THIS";position:absolute;top:-11px;left:24px;background:var(--orange);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:1px;padding:3px 10px;border-radius:99px}
+.plan .price{font-size:38px;font-weight:900;letter-spacing:-2px}
+.plan ul{list-style:none;margin:16px 0 20px;display:flex;flex-direction:column;gap:9px;font-size:14.5px}
+.plan li:before{content:"âœ“ ";color:var(--green);font-weight:800}
+table.cmp{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:24px}
+.cmp th,.cmp td{padding:11px 14px;border-bottom:1px solid #efece7;font-size:14px;text-align:left}
+.cmp th{font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--steel)}
+footer{padding:40px 0 60px;color:var(--steel);font-size:13px}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.plans{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<img src="assets/logo-horizontal.svg" alt="StockRig">
+<nav><a href="#how">How it works</a><a href="#proof">Why</a><a href="#pricing">Pricing</a></nav>
+</header>
+
+<div class="hero">
+<div>
+<span class="kicker">For 1â€“5 tech shops</span>
+<h1>You own 14 thermostats.<br>You can find <em style="color:var(--orange)">zero</em>.</h1>
+<p class="lede">StockRig turns every van into a tracked location. Parts get par levels per truck, usage lands on the job, and the restock list writes itself before Monday.</p>
+<div class="cta-row">
+<a class="btn" href="#pricing">Start free</a>
+<span class="micronote">Free forever, every feature. No demo call.</span>
+</div>
+</div>
+<div class="mockup">
+<div class="bar"><i></i><i></i><i></i></div>
+<div class="screen">
+<h4>Van 12 â€” Reyes Â· stock</h4>
+<div class="srow"><span>CAP-45-5 Â· Run capacitor 45/5</span><span class="out">OUT</span></div>
+<div class="srow"><span>CAP-35-5 Â· Run capacitor 35/5</span><span class="low">LOW Â· 3</span></div>
+<div class="srow"><span>CONT-30 Â· Contactor 30A</span><span class="ok">OK Â· 5</span></div>
+<div class="srow"><span>TSTAT-P Â· Thermostat</span><span class="ok">OK Â· 2</span></div>
+<div style="margin-top:12px;padding:10px;background:#fdeadd;border-radius:8px;font-weight:600">ðŸ“‹ Restock list ready â†’ order +6 caps, +1 tstat</div>
+</div>
+</div>
+</div>
+
+<section id="how">
+<h2>The whole loop, nothing else</h2>
+<p class="sub">Big field-service suites charge hundreds per tech and still don't track what's physically on your trucks. Generic inventory apps count bins but never touch a job ticket. StockRig does only the van-stock loop:</p>
+<div class="grid3">
+<div class="step"><div class="n">1</div><h3>Set par levels per van</h3><p>Load each truck once from a spreadsheet or paste-in. Give every part its own minimum per truck.</p></div>
+<div class="step"><div class="n">2</div><h3>Use parts on jobs</h3><p>Tech deducts a part against a job number in seconds. It leaves the van AND lands on the billable list â€” no more forgot-to-charge parts.</p></div>
+<div class="step"><div class="n">3</div><h3>Restock writes itself</h3><p>Anything under par shows up on a per-van order list. Hand it to the supply house. Export the billable-parts CSV to your invoicing.</p></div>
+</div>
+</section>
+
+<section id="proof">
+<h2>Why we built this</h2>
+<p class="sub">We didn't invent this pain. Shop owners keep describing the same hole in their software, in public, for years:</p>
+<blockquote class="quote"><p>"In my ideal world a technician would be able to add a line item and enter a part number and it would say 'you have this in your truck'â€¦ We have seriously been considering switching to a different program for lack of features that fit with Jobber on this."</p>
+<cite>â€” Jobber Community forum, inventory management thread. <a href="https://community.getjobber.com/discussions/service-based-skilled-trades/inventory-management/4964">Source</a></cite></blockquote>
+<blockquote class="quote"><p>"If you're already running field service management software â€” ServiceTitan, Housecall Pro, or similar â€” that system is essential for dispatching and invoicing. But it doesn't manage what's physically on your trucks very well."</p>
+<cite>â€” Katy Plumbing case study, eTurns. <a href="https://www.eturns.com/resources/blog/service-truck-inventory-management-how-katy-plumbing-stopped-resupply-runs-and-regained-1-2m-in-revenue/">Source</a></cite></blockquote>
+<blockquote class="quote"><p>"The worst thing a technician can say to a customer is that they don't have a part and will have to come back."</p>
+<cite>â€” Kennihan Plumbing & Heating, HVAC Today interview on truck inventory control. <a href="https://hvactoday.com/kennihan-service-truck-inventory-control/">Source</a></cite></blockquote>
+<table class="cmp">
+<tr><th>Option today</th><th>Van stock?</th><th>Job-linked billing?</th><th>Fits 1â€“5 techs?</th></tr>
+<tr><td>Jobber (Core $29/mo)</td><td>âŒ no native inventory at all</td><td>n/a</td><td>âœ… but can't do parts</td></tr>
+<tr><td>Housecall Pro ($59â€“149/mo)</td><td>âŒ job materials only, no per-van levels</td><td>partial</td><td>âœ…</td></tr>
+<tr><td>Workiz (~$225/mo Ultimate)</td><td>âœ… gated to top tier</td><td>âœ…</td><td>overkill pricing</td></tr>
+<tr><td>ServiceTitan / FieldEdge</td><td>âœ…</td><td>âœ…</td><td>âŒ enterprise contracts</td></tr>
+<tr><td><b>StockRig</b></td><td><b>âœ… purpose-built</b></td><td><b>âœ… billable export</b></td><td><b>âœ… free forever</b></td></tr>
+</table>
+<p class="sub" style="margin-top:14px;font-size:13px">Pricing/features per vendor pages as of Aug 2026: getjobber.com/pricing Â· housecallpro.com/pricing Â· workiz.com/pricing-plans Â· fsmadvisor.com/reviews/jobber. Sources open in new tabs so you can check us.</p>
+</section>
+
+<section id="pricing">
+<h2>Pricing that fits a five-van world</h2>
+<p class="sub">The tool is free. We get paid when we save you a weekend â€” not while you sleep.</p>
+<div class="plans">
+<div class="plan">
+<h3>StockRig</h3><div class="price">$0</div><p class="micronote">free forever Â· every feature</p>
+<ul><li>Unlimited vans &amp; parts</li><li>Par levels per truck</li><li>Usage â†’ billable-parts CSV</li><li>Per-van restock lists</li><li>CSV import &amp; export</li></ul>
+<button class="btn dark">Download free</button>
+</div>
+<div class="plan pro">
+<h3>Concierge Setup</h3><div class="price">$99<small style="font-size:15px;color:var(--steel)"> one-time</small></div><p class="micronote">optional â€” we do the boring part</p>
+<ul><li>We import your parts spreadsheet</li><li>Vans loaded &amp; par levels set for you</li><li>First printed restock lists delivered</li><li>Trade-specific starter templates</li><li>No subscription. No sales calls.</li></ul>
+<button class="btn">Book concierge setup</button>
+</div>
+</div>
+<p class="sub" style="margin-top:14px;font-size:13px">Why free? Because van-stock shouldn't need a demo call. We get paid when we save you a weekend, not while you sleep.</p>
+</section>
+
+<footer>
+<p><b>STOCKRIG</b> â€” Know what's on the truck.<br>
+This page is part of a local pre-launch demo package; checkout links are stubbed and no data leaves this machine. Market claims link to their sources. Â© 2026 StockRig (pre-launch).</p>
+</footer>
+</div>
+</body>
+</html>
+

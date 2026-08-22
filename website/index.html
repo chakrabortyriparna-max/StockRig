@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockRig â€” Know what's on the truck</title>
+<meta name="description" content="Truck-stock inventory for 1â€“5 tech trades shops. Par levels, billable parts, restock lists. Free forever.">
+<link rel="icon" href="assets/logo-mark.svg">
+<link rel="stylesheet" href="assets/prime.css">
+</head>
+<body>
+
+<div id="loader"><div class="loader-inner"><svg viewBox="0 0 512 512" width="54" height="54"><rect x="16" y="16" width="480" height="480" rx="96" fill="#F25C05"/><rect x="112" y="120" width="128" height="104" rx="18" fill="#F7F5F2"/><rect x="272" y="120" width="128" height="104" rx="18" fill="#8A9199"/><line x1="88" y1="256" x2="424" y2="256" stroke="#1C1E22" stroke-width="14" stroke-dasharray="34 26" stroke-linecap="round"/><rect x="192" y="296" width="128" height="96" rx="18" fill="#1C1E22"/></svg><div id="loadNum">00</div></div></div>
+
+<div class="grain"></div>
+<div id="cursor"></div>
+
+<header id="topbar">
+  <a class="wordmark" href="#">STOCK<b>RIG</b></a>
+  <nav><a href="#loop">The loop</a><a href="#proof">Why</a><a href="#pricing">Pricing</a></nav>
+</header>
+
+<section id="hero">
+  <canvas id="scene"></canvas>
+  <div class="hero-copy">
+    <p class="kicker reveal-line"><span>For 1â€“5 tech shops Â· free forever</span></p>
+    <h1><span class="hl"><span>KNOW WHAT'S</span></span><span class="hl"><span>ON THE <em>TRUCK.</em></span></span></h1>
+    <p class="lede reveal-line"><span>You own 14 thermostats. You can find zero.<br>StockRig turns every van into a counted, par-leveled, billable location.</span></p>
+    <div class="cta-row reveal-line"><span><a class="btn" href="#pricing">Start free</a></span><span class="micronote">No demo call. No subscription. Ever.</span></div>
+  </div>
+  <div class="scroll-cue"><span></span>scroll</div>
+</section>
+
+<section id="manifesto">
+  <p id="manifesto-text">Every trades shop runs on two inventories â€” the one in the software and the one rusting in the van. Only one of them makes you money back.</p>
+</section>
+
+<div id="loop-wrap">
+  <section id="loop">
+    <div class="loop-track">
+      <article class="panel intro"><h2>THE LOOP</h2><p>The whole product is four moves. Nothing else ships.</p><span class="drag">keep scrolling â†’</span></article>
+      <article class="panel"><div class="num">01</div><h3>Par levels per van</h3><p>Load each truck once. Give every part its own minimum per truck â€” Van 12 and Van 07 don't carry the same world.</p></article>
+      <article class="panel"><div class="num">02</div><h3>Parts used on jobs</h3><p>A tech deducts a part against a job number in seconds. It leaves the van <b>and</b> lands on the billable list.</p></article>
+      <article class="panel"><div class="num">03</div><h3>Billable CSV export</h3><p>"Forgot to charge for that" stops existing. Export the week's parts straight onto the invoice.</p></article>
+      <article class="panel"><div class="num">04</div><h3>Restock lists auto-built</h3><p>Anything under par shows up on a per-van order list. Hand it to the supply house. Done by Monday.</p></article>
+    </div>
+  </section>
+</div>
+
+<section id="demo">
+<h2 class="sec-title"><span>See the whole loop in 27 seconds.</span></h2>
+<div class="video-shell">
+<video controls muted playsinline preload="metadata" src="assets/launch-video.mp4"></video>
+<p class="src-note">Launch film — built entirely from code: kinetic typography over a synthesized soundtrack. No stock footage, no generation APIs.</p>
+</div>
+</section>
+
+<section id="proof">
+  <h2 class="sec-title"><span>Don't take our word.</span></h2>
+  <blockquote class="quote q"><p>"In my ideal world a technician would be able to add a line item and enter a part number and it would say 'you have this in your truck'â€¦"</p><cite>â€” Jobber Community forum <a href="https://community.getjobber.com/discussions/service-based-skilled-trades/inventory-management/4964">source â†—</a></cite></blockquote>
+  <blockquote class="quote q"><p>"That system is essential for dispatching and invoicing. But it doesn't manage what's physically on your trucks very well."</p><cite>â€” Katy Plumbing, eTurns case study <a href="https://www.eturns.com/resources/blog/service-truck-inventory-management-how-katy-plumbing-stopped-resupply-runs-and-regained-1-2m-in-revenue/">source â†—</a></cite></blockquote>
+  <blockquote class="quote q"><p>"The worst thing a technician can say to a customer is that they don't have a part and will have to come back."</p><cite>â€” Kennihan Plumbing & Heating, HVAC Today <a href="https://hvactoday.com/kennihan-service-truck-inventory-control/">source â†—</a></cite></blockquote>
+</section>
+
+<section id="compare">
+  <h2 class="sec-title"><span>The gap, in one table.</span></h2>
+  <table class="cmp">
+    <tr class="r"><th></th><th>Van stock?</th><th>Job-linked billing?</th><th>Fits 1â€“5 techs?</th></tr>
+    <tr class="r"><td>Jobber (Core $29/mo)</td><td>no native inventory</td><td>n/a</td><td>âœ“ but can't do parts</td></tr>
+    <tr class="r"><td>Housecall Pro ($59â€“149/mo)</td><td>job materials only</td><td>partial</td><td>âœ“</td></tr>
+    <tr class="r"><td>Workiz (~$225/mo Ultimate)</td><td>top tier only</td><td>âœ“</td><td>overkill pricing</td></tr>
+    <tr class="r highlight"><td><b>StockRig</b></td><td><b>purpose-built</b></td><td><b>billable export</b></td><td><b>free forever</b></td></tr>
+  </table>
+  <p class="src-note">Pricing/features per vendor pages as of Aug 2026: getjobber.com/pricing Â· housecallpro.com/pricing Â· workiz.com/pricing-plans</p>
+</section>
+
+<section id="pricing">
+  <h2 class="sec-title"><span>Pricing that fits a five-van world.</span></h2>
+  <div class="plans">
+    <div class="plan tilt">
+      <h3>StockRig</h3><div class="price">$0</div><p class="micronote">free forever Â· every feature</p>
+      <ul><li>Unlimited vans &amp; parts</li><li>Par levels per truck</li><li>Usage â†’ billable-parts CSV</li><li>Per-van restock lists</li><li>CSV import &amp; export</li></ul>
+      <button class="btn dark">Download free</button>
+    </div>
+    <div class="plan pro tilt">
+      <h3>Concierge Setup</h3><div class="price">$99<small>/ once</small></div><p class="micronote">optional â€” we do the boring part</p>
+      <ul><li>We import your parts spreadsheet</li><li>Vans loaded &amp; par levels set for you</li><li>First printed restock lists delivered</li><li>No subscription. No sales calls.</li></ul>
+      <button class="btn">Book concierge setup</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-cta"><h2>Stop buying parts<br><em>you already own.</em></h2><a class="btn big" href="#hero">Start free</a></div>
+  <p class="disclosure"><b>STOCKRIG</b> â€” pre-launch local demo package. Checkout buttons are stubbed; no data leaves this machine. Market claims link to their sources. Â© 2026 StockRig (pre-launch).</p>
+</footer>
+
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/prime.js"></script>
+</body>
+</html>
+
+
+

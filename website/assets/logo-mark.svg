@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="StockRig mark">
+  <!-- StockRig "Par Line" badge -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="#1C1E22"/>
+  <!-- par level dashed line -->
+  <line x1="88" y1="256" x2="424" y2="256" stroke="#F7F5F2" stroke-width="14" stroke-dasharray="34 26" stroke-linecap="round"/>
+  <!-- bins above the line -->
+  <rect x="112" y="120" width="128" height="104" rx="18" fill="#F7F5F2"/>
+  <rect x="272" y="120" width="128" height="104" rx="18" fill="#8A9199"/>
+  <!-- handle cutouts -->
+  <rect x="152" y="156" width="48" height="16" rx="8" fill="#1C1E22"/>
+  <rect x="312" y="156" width="48" height="16" rx="8" fill="#1C1E22"/>
+  <!-- bin dipping below par = low stock -->
+  <rect x="192" y="296" width="128" height="96" rx="18" fill="#F25C05"/>
+  <rect x="232" y="330" width="48" height="16" rx="8" fill="#1C1E22"/>
+</svg>

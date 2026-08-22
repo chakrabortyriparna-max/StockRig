@@ -1,0 +1,6 @@
+﻿# never commit secrets
+.env
+node_modules/
+
+product/data/
+opencode.json
