@@ -7,12 +7,27 @@
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-CREATE TABLE IF NOT EXISTS public.users (
-  id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  full_name   text NOT NULL DEFAULT '',
-  created_at  timestamptz NOT NULL DEFAULT now(),
-  updated_at  timestamptz NOT NULL DEFAULT now()
-);
+-- App users extend InsForge's auth.users when present (managed deployments);
+-- on vanilla Postgres (CI, self-hosted) they stand alone with the same shape.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.schemata WHERE schema_name = 'auth') THEN
+    EXECUTE 'CREATE TABLE IF NOT EXISTS public.users (
+      id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+      full_name   text NOT NULL DEFAULT '''',
+      created_at  timestamptz NOT NULL DEFAULT now(),
+      updated_at  timestamptz NOT NULL DEFAULT now()
+    )';
+  ELSE
+    EXECUTE 'CREATE TABLE IF NOT EXISTS public.users (
+      id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      email       text UNIQUE,
+      full_name   text NOT NULL DEFAULT '''',
+      created_at  timestamptz NOT NULL DEFAULT now(),
+      updated_at  timestamptz NOT NULL DEFAULT now()
+    )';
+  END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS public.orgs (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
