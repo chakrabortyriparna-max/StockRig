@@ -90,3 +90,7 @@ jobs:
       - name: Migrate up again — greenfield restored
         working-directory: cloud
         run: node scripts/migrate.js up
+
+      - name: Tenant isolation suite (SR-C07, real SQL)
+        working-directory: cloud
+        run: node --test tests/isolation.int.test.js
