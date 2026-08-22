@@ -61,11 +61,13 @@ async function main() {
   // Lazy require so tests can import this module without pg installed.
   const { Client } = require("pg");
   const dir = path.join(__dirname, "..", "migrations");
-  const files = fileName
+  let files = fileName
     ? [path.resolve(fileName)]
     : fs.readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()
         .map((f) => path.join(dir, f));
   if (files.length === 0) throw new Error("no migration files found");
+  // Down must unwind in reverse order (dependencies).
+  if (direction === "down") files = files.reverse();
 
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();

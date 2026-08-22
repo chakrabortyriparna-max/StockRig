@@ -2,7 +2,13 @@
    Everything else gets safe defaults. Frozen: config is read-only after boot. */
 "use strict";
 
-const REQUIRED = ["DATABASE_URL", "JWT_SECRET", "APP_BASE_URL"];
+const REQUIRED = [
+  "DATABASE_URL",
+  "JWT_SECRET",
+  "APP_BASE_URL",
+  "INSFORGE_BASE_URL",
+  "INSFORGE_API_KEY",
+];
 
 function loadConfig(env = process.env) {
   const missing = REQUIRED.filter((k) => !env[k] || !String(env[k]).trim());
@@ -19,6 +25,8 @@ function loadConfig(env = process.env) {
     databaseUrl: env.DATABASE_URL,
     jwtSecret: env.JWT_SECRET,
     appBaseUrl: env.APP_BASE_URL,
+    insforgeBaseUrl: String(env.INSFORGE_BASE_URL).replace(/\/$/, ""),
+    insforgeApiKey: env.INSFORGE_API_KEY,
     nodeEnv: env.NODE_ENV || "development",
     sentryDsn: env.SENTRY_DSN || "",
     resendApiKey: env.RESEND_API_KEY || "",

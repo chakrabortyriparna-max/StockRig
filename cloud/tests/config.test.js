@@ -9,13 +9,15 @@ const VALID_ENV = {
   DATABASE_URL: "postgres://user:pass@localhost:5432/stockrig",
   JWT_SECRET: "test-secret-not-for-prod",
   APP_BASE_URL: "http://localhost",
+  INSFORGE_BASE_URL: "https://example.insforge.app/",
+  INSFORGE_API_KEY: "ik_test_key",
 };
 
 test("loadConfig throws listing every missing required var", () => {
   assert.throws(() => loadConfig({}), (err) => {
-    assert.match(err.message, /DATABASE_URL/);
-    assert.match(err.message, /JWT_SECRET/);
-    assert.match(err.message, /APP_BASE_URL/);
+    for (const k of ["DATABASE_URL", "JWT_SECRET", "APP_BASE_URL", "INSFORGE_BASE_URL", "INSFORGE_API_KEY"]) {
+      assert.match(err.message, new RegExp(k));
+    }
     return true;
   });
 });
@@ -31,6 +33,7 @@ test("loadConfig succeeds with all vars and applies defaults", () => {
   assert.equal(c.port, 8080);
   assert.equal(c.logLevel, "debug"); // dev default
   assert.equal(c.sentryDsn, "");
+  assert.equal(c.insforgeBaseUrl, "https://example.insforge.app"); // trailing slash stripped
 });
 
 test("production env selects info log level; explicit values win", () => {

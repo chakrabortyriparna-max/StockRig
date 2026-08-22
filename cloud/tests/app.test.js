@@ -9,6 +9,8 @@ const TEST_CONFIG = {
   databaseUrl: "postgres://user:pass@localhost:5432/stockrig",
   jwtSecret: "test-secret-not-for-prod",
   appBaseUrl: "http://localhost",
+  insforgeBaseUrl: "https://example.insforge.app",
+  insforgeApiKey: "ik_test_key",
   nodeEnv: "test",
   sentryDsn: "",
   resendApiKey: "",
