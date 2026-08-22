@@ -33,6 +33,15 @@ test("GET /healthz returns ok payload", async () => {
   await a.close();
 });
 
+test("GET / serves the SPA shell", async () => {
+  const a = await app();
+  const res = await a.inject({ method: "GET", url: "/" });
+  assert.equal(res.statusCode, 200);
+  assert.match(res.headers["content-type"], /text\/html/);
+  assert.match(res.body, /StockRig Cloud/);
+  await a.close();
+});
+
 test("unknown route returns JSON error contract ({error})", async () => {
   const a = await app();
   const res = await a.inject({ method: "GET", url: "/nope" });

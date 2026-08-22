@@ -2,6 +2,8 @@
 "use strict";
 
 const Fastify = require("fastify");
+const fastifyStatic = require("@fastify/static");
+const path = require("node:path");
 const { loadConfig } = require("./config");
 const { createInsForgeClient } = require("./insforge");
 const { createPgTokenStore } = require("./tokenstore");
@@ -9,7 +11,7 @@ const { createPgOrgRepo } = require("./orgRepo");
 const { createResendSender } = require("./resend");
 const { provisionShop, findMembershipByUser } = require("./tenancy");
 
-function buildApp(opts = {}) {
+async function buildApp(opts = {}) {
   const config = opts.config || loadConfig();
 
   const app = Fastify({
@@ -34,6 +36,12 @@ function buildApp(opts = {}) {
     service: "stockrig-cloud",
     version: "0.1.0",
   }));
+
+  // SPA — served by the API so one process runs the whole product locally.
+  await app.register(fastifyStatic, {
+    root: path.join(__dirname, "..", "public"),
+    prefix: "/",
+  });
 
   app.decorate("config", config);
 
@@ -82,3 +90,4 @@ function buildApp(opts = {}) {
 }
 
 module.exports = { buildApp };
+

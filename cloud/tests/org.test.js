@@ -108,7 +108,7 @@ async function appWith({ withResend = true } = {}) {
   ]);
   const findMembershipByUser = async (_db, userId) => (memberships.get(userId) || [null])[0];
 
-  const app = buildApp({
+  const app = await buildApp({
     config: {
       logLevel: "silent", insforgeBaseUrl: "https://x", insforgeApiKey: "k",
       databaseUrl: "postgres://x", appBaseUrl: "http://localhost:3000",
@@ -278,3 +278,4 @@ test("role change is owner-only and validates role values", async () => {
   assert.equal(r.json().role, "admin");
   await app.close();
 });
+

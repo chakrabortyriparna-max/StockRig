@@ -148,7 +148,7 @@ async function appWith(fakes = {}) {
   const db = fakes.db || fakeDb();
   const tokenStore = fakes.tokenStore || fakeTokenStore();
   const provisioned = [];
-  const app = buildApp({
+  const app = await buildApp({
     config: { logLevel: "silent", insforgeBaseUrl: "https://x", insforgeApiKey: "k", databaseUrl: "postgres://x" },
     logger: false,
     insforge,
@@ -374,3 +374,4 @@ test("reset flow: exchange code then set password; bad code rejected at boundary
   assert.equal(shortPass.statusCode, 400);
   await app.close();
 });
+

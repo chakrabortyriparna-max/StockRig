@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StockRig Cloud — know what's on the truck</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Stock<span>Rig</span> Cloud</h1>
+      <p class="tag">Your vans, counted. Any device.</p>
+    </header>
+
+    <!-- unauthenticated -->
+    <nav id="auth-tabs">
+      <button class="tab active" data-tab="signup">Create shop</button>
+      <button class="tab" data-tab="login">Log in</button>
+      <button class="tab" data-tab="accept">Accept invite</button>
+    </nav>
+
+    <section class="card active" id="card-signup">
+      <label>Shop name<input name="shopName" placeholder="Acme HVAC" required /></label>
+      <label>Your name<input name="name" placeholder="Dana" /></label>
+      <label>Email<input name="email" type="email" placeholder="dana@acme.co" required /></label>
+      <label>Password<input name="password" type="password" minlength="6" required /></label>
+      <button type="submit">Open my workspace</button>
+      <p class="msg"></p>
+    </section>
+
+    <section class="card" id="card-login">
+      <label>Email<input name="email" type="email" required /></label>
+      <label>Password<input name="password" type="password" required /></label>
+      <button type="submit">Log in</button>
+      <p class="msg"></p>
+    </section>
+
+    <section class="card" id="card-accept">
+      <p class="hint">Paste the invite link or token your shop owner sent you. Log in with that email first.</p>
+      <label>Invite token<input name="token" placeholder="64-character token from the invite link" required /></label>
+      <button type="submit">Join my shop</button>
+      <p class="msg"></p>
+    </section>
+
+    <!-- authenticated -->
+    <div class="bar" id="bar" style="display:none">
+      <span id="whoami"></span>
+      <button id="logout-btn">Log out</button>
+    </div>
+
+    <section id="workspace" style="display:none">
+      <h2>Crew</h2>
+      <ul class="list" id="members"></ul>
+
+      <h2>Invite a teammate</h2>
+      <form class="card row" id="invite-form">
+        <input name="email" type="email" placeholder="marcus@acme.co" required />
+        <select name="role"><option value="tech">Tech</option><option value="admin">Admin</option></select>
+        <button type="submit">Invite</button>
+      </form>
+      <div class="card invite-link" id="invite-result" style="display:none">
+        <p class="hint">Share this accept link:</p>
+        <code id="invite-url"></code>
+        <button type="button" id="copy-invite">Copy link</button>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
