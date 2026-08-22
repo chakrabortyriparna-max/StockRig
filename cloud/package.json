@@ -1,0 +1,17 @@
+{
+  "name": "@stockrig/cloud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "StockRig Cloud API — multi-tenant truck-stock inventory service",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "fastify": "^4.28.1"
+  }
+}
