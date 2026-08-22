@@ -66,18 +66,18 @@ jobs:
           node scripts/migrate.js up
 
       - name: Assert schema exists
-        run: >
-          psql -h localhost -U postgres -d stockrig_ci -tAc
-          "SELECT count(*) FROM information_schema.tables
-           WHERE table_schema='public' AND table_name IN
-           ('users','orgs','memberships','locations','parts','stock_qty','pars','usage','audit_events')"
-          | grep -qx 9
+        run: |
+          COUNT=$(psql -h localhost -U postgres -d stockrig_ci -tAc \
+            "SELECT count(*) FROM information_schema.tables
+             WHERE table_schema='public' AND table_name IN
+             ('users','orgs','memberships','locations','parts','stock_qty','pars','usage','audit_events')")
+          [ "$COUNT" = "9" ] || { echo "expected 9 tables, got $COUNT"; exit 1; }
 
       - name: Billed-immutability trigger survives roundtrip
-        run: >
-          psql -h localhost -U postgres -d stockrig_ci -tAc
-          "SELECT count(*) FROM pg_trigger WHERE tgname='trg_usage_billed_immutable'"
-          | grep -qx 1
+        run: |
+          COUNT=$(psql -h localhost -U postgres -d stockrig_ci -tAc \
+            "SELECT count(*) FROM pg_trigger WHERE tgname='trg_usage_billed_immutable'")
+          [ "$COUNT" = "1" ] || { echo "trigger missing, count=$COUNT"; exit 1; }
 
       - name: Migrate down — schema must be gone
         working-directory: cloud
